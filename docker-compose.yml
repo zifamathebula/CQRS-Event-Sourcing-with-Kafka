@@ -24,13 +24,42 @@ services:
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
     depends_on:
       - zookeeper
+  mongo-db:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    restart: always
+    volumes:
+      - "mongo_data:/data/db"
+  mysql-db:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    restart: always
+    volumes:
+      - "mysql_data:/var/lib/mysql"
+    environment:
+      - MYSQL_ROOT_PASSWORD=techbankRootPsw
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      - ADMINER_DEFAULT_SERVER=mysql-db
+    depends_on:
+      - mysql-db
 
 volumes:
   zookeeper_data:
     driver: local
   kafka_data:
     driver: local
-   
+  mongo_data:
+    driver: local
+  mysql_data:
+    driver: local
+
 networks:
   default:
     external:
